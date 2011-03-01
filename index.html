@@ -1,13 +1,20 @@
-<HTML>
-<HEAD>
-  <TITLE>Controlling the Logitech iFeel Mouse</TITLE>
-</HEAD>
-<BODY>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Controlling the Logitech iFeel Mouse</title>
+  <style type="text/css">
+    table.packet { width: 50%; border: 1px solid black; border-collapse: collapse; }
+    table.packet th, td { border: 1px solid black; text-align: center; }
+    table.packet th { width: 30%; }
+  </style>
+</head>
+<body>
 
-<H1>Controlling the Logitech iFeel Mouse</H1>
+<h1>Controlling the Logitech iFeel Mouse</h1>
 
-<H2>License</H2>
-<SMALL><PRE>
+<h2>License</h2>
+<pre>
       Copyright (c)  2001-2011  Daniel C. Moore.
       Permission is granted to copy, distribute and/or modify this document
       under the terms of the GNU Free Documentation License, Version 1.1
@@ -15,60 +22,72 @@
       with no Invariant Sections, with no Front-Cover Texts, and no Back-Cover Texts.
       A copy of the license is included in the section entitled "GNU
       Free Documentation License".
-</PRE></SMALL>
+</pre>
 
-<H2>Intoduction</H2>
-<P>The Logitech iFeel Mouse is essentially the same as their wonderful normal-sized optical wheel mouse, but with the addition of pseudo force-feedback in the form of a vibration mechanism.  There is an iFeel version of their MouseMan mouse as well (called the iFeel MouseMan oddly enough), but I have not tested it.  Also untested are the other mice using Immersion's TouchSense that have popped up recently.  As far as I can tell, the only way to control the vibration functionality of these mice previously was through Immersion's binary-only Windows SDK or WDK.</P>
+<h2>Introduction</h2>
+<p>The Logitech iFeel Mouse is essentially the same as their wonderful normal-sized optical wheel mouse, but with the addition of pseudo force-feedback in the form of a vibration mechanism.  There is an iFeel version of their MouseMan mouse as well (called the iFeel MouseMan oddly enough), but I have not tested it.  Also untested are the other mice using Immersion's TouchSense that have popped up recently.  As far as I can tell, the only way to control the vibration functionality of these mice previously was through Immersion's binary-only Windows SDK or WDK.</p>
 
-<H2>Inebriated Innovation</H2>
-<P>As with my <A href="http://www.bebits.com/app/1555">previous</A> release of additional platform support for a computer peripheral named after a small furry mammal, the revelation of how to make my new mouse shake its little rodent booty came with the help of Prof. Stolichnaya and Dr. Tanqueray.  I don't even remember how it happened.  All I know is that I was awakened the next day by the sound of an incessantly oscillating pointing device that I had discarded in the trash can along with an empty bottle of Malacca.  What follows I learned by analyzing the surprisingly simple Be program which was causing the aforementioned incessant oscillation.</P>
+<h2>Inebriated Innovation</h2>
+<p>As with my <a href="http://www.bebits.com/app/1555">previous</a> release of additional platform support for a computer peripheral named after a small furry mammal, the revelation of how to make my new mouse shake its little rodent booty came with the help of Prof. Stolichnaya and Dr. Tanqueray.  I don't even remember how it happened.  All I know is that I was awakened the next day by the sound of an incessantly oscillating pointing device that I had discarded in the trash can along with an empty bottle of Malacca.  What follows I learned by analyzing the surprisingly simple Be program which was causing the aforementioned incessant oscillation.</p>
 
-<H2>Protocol</H2>
-<P>I've found only two commands that you can send to the device that actually do anything.  There is a what seems to be a 'vibrate' command which starts the vibration, and an 'abort' command that will stop any ongoing vibrate command before it completes its run.</P>
-<P>The commands are sent to the mouse's USB device over the control pipe.  To form the control packet, use 'request type' 0x21, 'request' 0x09, 'value' 0x0200, and 'index' 0x0000 (see <A href="http://www.usb.org/developers/docs/">USB Spec</A> for more information on what these values are) along with a 7-byte buffer as described below.</P>
+<h2>Protocol</h2>
+<p>I've found only two commands that you can send to the device that actually do anything.  There is a what seems to be a 'vibrate' command which starts the vibration, and an 'abort' command that will stop any ongoing vibrate command before it completes its run.</p>
+<p>The commands are sent to the mouse's USB device over the control pipe.  To form the control packet, use 'request type' 0x21, 'request' 0x09, 'value' 0x0200, and 'index' 0x0000 (see <a href="http://www.usb.org/developers/docs/">USB Spec</a> for more information on what these values are) along with a 7-byte buffer as described below.</p>
 
-<H3>Command Formats</H3>
-<H4>Vibrate</H4>
-<P>This starts the mouse vibrating with the specified <CODE>intensity</CODE> (0-255) and <CODE>delay</CODE> between pulses (0-255 ms) for the specified <CODE>count</CODE> of pulses (1-255).  If you want a delay longer than 255ms or more than 255 pulses, you have to do it yourself using multiple vibrate commands.  Note that it is possible that the two bytes I have labeled as 'Not used" are actually useful, I just haven't had any luck in getting them to "do" anything.</P>
-<TABLE rows=2 cols=8 border=1 width="50%">
-<TR>
-  <TH width="30%">Byte</TH>
-  <TD align=center width="10%">6</TD> <TD align=center width="10%">5</TD> <TD align=center width="10%">4</TD> <TD align=center width="10%">3</TD> <TD align=center width="10%">2</TD> <TD align=center width="10%">1</TD> <TD align=center width="10%">0</TD>
-  </TR>
-<TR>
-  <TH>Description</TH>
-  <TD colspan=2><CODE>Command</CODE> ["0x11","0x0a"]</TD>
-  <TD><CODE>Intensity</CODE></TD>
-  <TD><CODE>Delay</CODE> in ms</TD>
-  <TD>Not used ["0x00"]</TD>
-  <TD><CODE>Count</CODE></TD>
-  <TD>Not used ["0x00"]</TD>
-  </TR>
-</TABLE>
+<h3>Command Formats</h3>
 
-<H4>Abort</H4>
-<P>This aborts the current vibration command (if any).  Just used to stop the vibrations before the full count specified in the vibrate command.</P>
-<TABLE rows=2 cols=8 border=1 width="50%">
-<TR>
-  <TH width="30%">Byte</TH>
-  <TD align=center width="10%">6</TD> <TD align=center width="10%">5</TD> <TD align=center width="10%">4</TD> <TD align=center width="10%">3</TD> <TD align=center width="10%">2</TD> <TD align=center width="10%">1</TD> <TD align=center width="10%">0</TD>
-  </TR>
-<TR>
-  <TH>Values</TH>
-  <TD colspan=2>0x13, 0x00</TD>
-  <TD>0x00</TD>
-  <TD>0x00</TD>
-  <TD>0x00</TD>
-  <TD>0x00</TD>
-  <TD>0x00</TD>
-  </TR>
-</TABLE>
+<h4>Vibrate</h4>
+<p>This starts the mouse vibrating with the specified <CODE>intensity</CODE> (0-255) and <CODE>delay</CODE> between pulses (0-255 ms) for the specified <CODE>count</CODE> of pulses (1-255).  If you want a delay longer than 255ms or more than 255 pulses, you have to do it yourself using multiple vibrate commands.  Note that it is possible that the two bytes I have labeled as 'Not used" are actually useful, I just haven't had any luck in getting them to "do" anything.</p>
 
-<H2>Example Code</H2>
-I love example code.  You won't want to run this, though.  Instead get the nice friendly version <A href="code/">here</A>.
-<H3><A href="http://en.wikipedia.org/wiki/BeOS">BeOS</A></H3>
-As usual when writing code for Be, this is excrutiatingly simple.  It does require Be's USBKit (which is included in the <A href="code/">sample code archive</A>).
-<PRE><CODE>
+<table class="packet">
+	<thead>
+		<tr>
+			<th>Byte</th>
+			<td>6</td> <td>5</td> <td>4</td> <td>3</td> <td>2</td> <td>1</td> <td>0</td>
+	    </tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>Description</th>
+			<td colspan=2><CODE>Command</CODE> ["0x11","0x0a"]</td>
+			<td><CODE>Intensity</CODE></td>
+			<td><CODE>Delay</CODE> in ms</td>
+			<td>Not used ["0x00"]</td>
+			<td><CODE>Count</CODE></td>
+			<td>Not used ["0x00"]</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<h4>Abort</h4>
+<p>This aborts the current vibration command (if any).  Just used to stop the vibrations before the full count specified in the vibrate command.</p>
+
+<table class="packet">
+	<thead>
+		<tr>
+			<th>Byte</th>
+			<td>6</td> <td>5</td> <td>4</td> <td>3</td> <td>2</td> <td>1</td> <td>0</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+			<th>Values</th>
+			<td colspan=2>0x13, 0x00</td>
+			<td>0x00</td>
+			<td>0x00</td>
+			<td>0x00</td>
+			<td>0x00</td>
+			<td>0x00</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>Example Code</h2>
+I love example code.  You won't want to run this, though.  Instead get the nice friendly version <a href="code/">here</a>.
+<h3><a href="http://en.wikipedia.org/wiki/BeOS">BeOS</a></h3>
+As usual when writing code for Be, this is excruciatingly simple.  It does require Be's USBKit (which is included in the <a href="code/">sample code archive</a>).
+<pre><code>
   #define INTENSITY	200
   #define DELAY		3
   #define COUNT		69
@@ -80,41 +99,41 @@ As usual when writing code for Be, this is excrutiatingly simple.  It does requi
   uchar vibrate_cmd[7] = {0x11, 0x0a, INTENSITY, DELAY, 0x00, COUNT, 0x00};
 
   ifeel.ControlTransfer(0x21, 0x09, 0x0200, 0x0000, 7, vibrate_cmd);
-</CODE></PRE>
+</code></pre>
 
-<H2>Uses</H2>
-<P>While the usefulness of this may seem dubious, when used appropriately it could have a significant impact on the user experience.  While I'm far from an expert on such things, I would imagine that it could help those with sight disabilities.  It could probably help anyone by reducing the amount of attention that has to be paid to where the mouse is, especially when using it for focus switching or other non-precise pointing tasks.  It could be very useful in FPS games as well, perhaps to provide a way for one to know exactly what their player is getting hit with, or in RTS games to give more information about what is going on outside the current view of the game for instance.  In general, I'm always happy to see another unobstructive way to convey information to the user.  There, now I feel like I've given enough reasons to justify to myself why I bothered to find this out.</P>
+<h2>Uses</h2>
+<p>While the usefulness of this may seem dubious, when used appropriately it could have a significant impact on the user experience.  While I'm far from an expert on such things, I would imagine that it could help those with sight disabilities.  It could probably help anyone by reducing the amount of attention that has to be paid to where the mouse is, especially when using it for focus switching or other non-precise pointing tasks.  It could be very useful in FPS games as well, perhaps to provide a way for one to know exactly what their player is getting hit with, or in RTS games to give more information about what is going on outside the current view of the game for instance.  In general, I'm always happy to see another unobtrusive way to convey information to the user.  There, now I feel like I've given enough reasons to justify to myself why I bothered to find this out.</p>
 
-<H2>History</H2>
-<DL>
-<DT>05/08/2001</DT> <DD>Initial version</DD>
-<DT>09/10/2001</DT> <DD>Changed to GNU Free Documentation License, changed existing copyright notices to reflect such.</DD>
-<DT>01/14/2002</DT> <DD>Added link to list of mice, updated copyright notice</DD>
-<DT>03/01/2011</DT> <DD>Added to GitHub, removed some outdated links.</DD>
-</DL>
+<h2>History</h2>
+<dl>
+	<dt>05/08/2001</dt> <dd>Initial version</dd>
+	<dt>09/10/2001</dt> <dd>Changed to GNU Free Documentation License, changed existing copyright notices to reflect such.</dd>
+	<dt>01/14/2002</dt> <dd>Added link to list of mice, updated copyright notice</dd>
+	<dt>03/01/2011</dt> <dd>Added to GitHub, removed some outdated links.  Cleaned up HTML, spelling, etc.</dd>
+</dl>
 
 
-<H2>Notices</H2>
+<h2>Notices</h2>
 
-<H5>Warranty Disclaimer</H5>
-<P>No warranty expressed or implied for any measure including performance, suitability, or safety.  As far as I know everything here is correct but don't hold me to it.  I've played with this quite a bit and not killed my mouse or my computer yet, but that doesn't mean it can't happen -- I wouldn't be surprised that you can get the mouse to draw enough power off the USB bus to have unfortunate consequences.</P>
+<h3>Warranty Disclaimer</h3>
+<p>No warranty expressed or implied for any measure including performance, suitability, or safety.  As far as I know everything here is correct but don't hold me to it.  I've played with this quite a bit and not killed my mouse or my computer yet, but that doesn't mean it can't happen -- I wouldn't be surprised that you can get the mouse to draw enough power off the USB bus to have unfortunate consequences.</p>
 
-<H5>Trademarks</H5>
-<P>Lots of things on this page are trademarks of <A href="http://www.be.com/">Be</A>, <A href="http://www.logitech.com/">Logitech</A>, <A href="http://www.immersion.com">Immersion</A>, <A href="http://www.microsoft.com/">Microsoft</A>, <A href="http://www.belkin.com/">Belkin</A>, and probably others.  Nothing on this page is a trademark of me.</P>
+<h3>Trademarks</h3>
+<p>Lots of things on this page are trademarks of <a href="http://www.be.com/">Be</a>, <a href="http://www.logitech.com/">Logitech</a>, <a href="http://www.immersion.com">Immersion</a>, <a href="http://www.microsoft.com/">Microsoft</a>, <a href="http://www.belkin.com/">Belkin</a>, and probably others.  Nothing on this page is a trademark of me.</p>
 
-<H5>Reverse Engineering</H5>
-It should be noted that there is no license covering the communication between devices on my USB bus, so I couldn't possibly have violated any reverse engineering clause in any license I may have accidentally agreed to in my drunken stupor.  The closest thing is in the EULA for the Immersion Desktop software:
-<BLOCKQUOTE>Licensee agrees not to attempt to decompile, reverse engineer, disassemble, or otherwise reduce the Licensed Software to human-readable form.</BLOCKQUOTE>
-I have no idea what the source code or a human readable form of the software might look like, nor did I try to find that out as far as I remember [hic].
+<h3>Reverse Engineering</h3>
+<p>It should be noted that there is no license covering the communication between devices on my USB bus, so I couldn't possibly have violated any reverse engineering clause in any license I may have accidentally agreed to in my drunken stupor.  The closest thing is in the EULA for the Immersion Desktop software:</p>
+<blockquote>Licensee agrees not to attempt to decompile, reverse engineer, disassemble, or otherwise reduce the Licensed Software to human-readable form.</blockquote>
+<p>I have no idea what the source code or a human readable form of the software might look like, nor did I try to find that out as far as I remember [hic].</p>
 
-<H5>Changes/Mistakes</H5>
-If you find any problems or have any questions <A href="mailto:ifeel@inebriated-innovation.org">let me know</A>.
+<h3>Changes/Mistakes</h3>
+<p>If you find any problems or have any questions <a href="mailto:ifeel@inebriated-innovation.org">let me know</a>.</p>
 
-<H5>Latest Version</H5>
-<P>Latest version at <A href="http://inebriated-innovation.org/ifeel/">http://inebriated-innovation.org/ifeel/</A></P>
+<h3>Latest Version</h3>
+<p>Latest version at <a href="http://inebriated-innovation.org/ifeel/">http://inebriated-innovation.org/ifeel/</a></p>
 
-<H5>GNU Free Documentation License</H5>
-<SMALL><PRE>
+<h3>GNU Free Documentation License</h3>
+<pre>
 		GNU Free Documentation License
 		   Version 1.1, March 2000
 
@@ -470,7 +489,7 @@ If your document contains nontrivial examples of program code, we
 recommend releasing these examples in parallel under your choice of
 free software license, such as the GNU General Public License,
 to permit their use in free software.
-</PRE></SMALL>
+</pre>
 
-</BODY>
-</HTML>
+</body>
+</html>

@@ -1,6 +1,6 @@
 This was a project I used to learn a little bit about the USB protocol and reverse-engineering way back in the 2000-2001 time period.
 
-I released it under the "Inebratied Innovation" name (http://inebriated-innovation.org/) because I didn't want to get sued.  Hopefully I still won't.  Since nobody seems to make iFeel mice anymore, I think I'm OK.
+I released it under the "Inebratied Innovation" name (http://inebriated-innovation.org/) because I didn't want to get sued.  Hopefully I still won't.  Since nobody seems to make iFeel mice anymore, I think I'm OK.  And yes, I literally was intoxicated while working on this - how else would this seem like a good way to spend my time?
 
 The source code I supplied here only runs under BeOS, but it looks like someone did take my research and used it to make a Linux kernel module and support util so some use came out of it: http://tactile.sourceforge.net/
 
