@@ -7,6 +7,10 @@
     table.packet { width: 50%; border: 1px solid black; border-collapse: collapse; }
     table.packet th, td { border: 1px solid black; text-align: center; }
     table.packet th { width: 30%; }
+    table.packet td { width: 10%; }
+	table.packet thead, th { background-color: gray; }
+
+    code { display: block; white-space: pre-wrap; }
   </style>
 </head>
 <body>
@@ -37,7 +41,7 @@
 <h3>Command Formats</h3>
 
 <h4>Vibrate</h4>
-<p>This starts the mouse vibrating with the specified <CODE>intensity</CODE> (0-255) and <CODE>delay</CODE> between pulses (0-255 ms) for the specified <CODE>count</CODE> of pulses (1-255).  If you want a delay longer than 255ms or more than 255 pulses, you have to do it yourself using multiple vibrate commands.  Note that it is possible that the two bytes I have labeled as 'Not used" are actually useful, I just haven't had any luck in getting them to "do" anything.</p>
+<p>This starts the mouse vibrating with the specified <var>intensity</var> (0-255) and <var>delay</var> between pulses (0-255 ms) for the specified <var>count</var> of pulses (1-255).  If you want a delay longer than 255ms or more than 255 pulses, you have to do it yourself using multiple vibrate commands.  Note that it is possible that the two bytes I have labeled as 'Not used" are actually useful, I just haven't had any luck in getting them to "do" anything.</p>
 
 <table class="packet">
 	<thead>
@@ -49,11 +53,11 @@
 	<tbody>
 		<tr>
 			<th>Description</th>
-			<td colspan=2><CODE>Command</CODE> ["0x11","0x0a"]</td>
-			<td><CODE>Intensity</CODE></td>
-			<td><CODE>Delay</CODE> in ms</td>
+			<td colspan=2><var>Command</var> ["0x11","0x0a"]</td>
+			<td><var>Intensity</var></td>
+			<td><var>Delay</var> in ms</td>
 			<td>Not used ["0x00"]</td>
-			<td><CODE>Count</CODE></td>
+			<td><var>Count</var></td>
 			<td>Not used ["0x00"]</td>
         </tr>
     </tbody>
@@ -87,7 +91,7 @@
 I love example code.  You won't want to run this, though.  Instead get the nice friendly version <a href="code/">here</a>.
 <h3><a href="http://en.wikipedia.org/wiki/BeOS">BeOS</a></h3>
 As usual when writing code for Be, this is excruciatingly simple.  It does require Be's USBKit (which is included in the <a href="code/">sample code archive</a>).
-<pre><code>
+<code>
   #define INTENSITY	200
   #define DELAY		3
   #define COUNT		69
@@ -99,7 +103,7 @@ As usual when writing code for Be, this is excruciatingly simple.  It does requi
   uchar vibrate_cmd[7] = {0x11, 0x0a, INTENSITY, DELAY, 0x00, COUNT, 0x00};
 
   ifeel.ControlTransfer(0x21, 0x09, 0x0200, 0x0000, 7, vibrate_cmd);
-</code></pre>
+</code>
 
 <h2>Uses</h2>
 <p>While the usefulness of this may seem dubious, when used appropriately it could have a significant impact on the user experience.  While I'm far from an expert on such things, I would imagine that it could help those with sight disabilities.  It could probably help anyone by reducing the amount of attention that has to be paid to where the mouse is, especially when using it for focus switching or other non-precise pointing tasks.  It could be very useful in FPS games as well, perhaps to provide a way for one to know exactly what their player is getting hit with, or in RTS games to give more information about what is going on outside the current view of the game for instance.  In general, I'm always happy to see another unobtrusive way to convey information to the user.  There, now I feel like I've given enough reasons to justify to myself why I bothered to find this out.</p>
