@@ -8,7 +8,7 @@
 
 <H2>License</H2>
 <SMALL><PRE>
-      Copyright (c)  2001-2002  Daniel C. Moore.
+      Copyright (c)  2001-2011  Daniel C. Moore.
       Permission is granted to copy, distribute and/or modify this document
       under the terms of the GNU Free Documentation License, Version 1.1
       or any later version published by the Free Software Foundation;
@@ -18,17 +18,17 @@
 </PRE></SMALL>
 
 <H2>Intoduction</H2>
-<P>The <A href="http://www.logitech.com/cf/products/productoverview.cfm/79">Logitech iFeel Mouse</A> is essentially the same as their wonderful normal-sized optical wheel mouse, but with the addition of pseudo force-feedback in the form of a vibration mechanism.  There is an iFeel version of their MouseMan mouse as well (called the <A href="http://www.logitech.com/cf/products/productoverview.cfm/80">iFeel MouseMan</A> oddly enough), but I have not tested it.  Also untested are the <A href="http://www.immersion.com/products/ce/gamingmice.shtml">other mice using Immersion's TouchSense</A> that have popped up recently.  As far as I can tell, the only way to control the vibration functionality of these mice previously was through Immersion's binary-only Windows <A href="http://www.immersion.com/developer/sdk.html">SDK</A> or <A href="http://www.immersion.com/developer/wdk.html">WDK</A>.</P>
+<P>The Logitech iFeel Mouse is essentially the same as their wonderful normal-sized optical wheel mouse, but with the addition of pseudo force-feedback in the form of a vibration mechanism.  There is an iFeel version of their MouseMan mouse as well (called the iFeel MouseMan oddly enough), but I have not tested it.  Also untested are the other mice using Immersion's TouchSense that have popped up recently.  As far as I can tell, the only way to control the vibration functionality of these mice previously was through Immersion's binary-only Windows SDK or WDK.</P>
 
 <H2>Inebriated Innovation</H2>
 <P>As with my <A href="http://www.bebits.com/app/1555">previous</A> release of additional platform support for a computer peripheral named after a small furry mammal, the revelation of how to make my new mouse shake its little rodent booty came with the help of Prof. Stolichnaya and Dr. Tanqueray.  I don't even remember how it happened.  All I know is that I was awakened the next day by the sound of an incessantly oscillating pointing device that I had discarded in the trash can along with an empty bottle of Malacca.  What follows I learned by analyzing the surprisingly simple Be program which was causing the aforementioned incessant oscillation.</P>
 
 <H2>Protocol</H2>
 <P>I've found only two commands that you can send to the device that actually do anything.  There is a what seems to be a 'vibrate' command which starts the vibration, and an 'abort' command that will stop any ongoing vibrate command before it completes its run.</P>
-<P>The commands are sent to the mouse's USB device over the control pipe.  To form the control packet, use 'request type' 0x21, 'request' 0x09, 'value' 0x0200, and 'index' 0x0000 (see <A href="http://www.usb.org/developers/data/usbspec.zip">USB 1.1 Spec</A> for more information on what these values are) along with a 7-byte buffer as described below.</P>
+<P>The commands are sent to the mouse's USB device over the control pipe.  To form the control packet, use 'request type' 0x21, 'request' 0x09, 'value' 0x0200, and 'index' 0x0000 (see <A href="http://www.usb.org/developers/docs/">USB Spec</A> for more information on what these values are) along with a 7-byte buffer as described below.</P>
 
 <H3>Command Formats</H3>
-<H4>Vibrate</H3>
+<H4>Vibrate</H4>
 <P>This starts the mouse vibrating with the specified <CODE>intensity</CODE> (0-255) and <CODE>delay</CODE> between pulses (0-255 ms) for the specified <CODE>count</CODE> of pulses (1-255).  If you want a delay longer than 255ms or more than 255 pulses, you have to do it yourself using multiple vibrate commands.  Note that it is possible that the two bytes I have labeled as 'Not used" are actually useful, I just haven't had any luck in getting them to "do" anything.</P>
 <TABLE rows=2 cols=8 border=1 width="50%">
 <TR>
@@ -46,7 +46,7 @@
   </TR>
 </TABLE>
 
-<H4>Abort</H3>
+<H4>Abort</H4>
 <P>This aborts the current vibration command (if any).  Just used to stop the vibrations before the full count specified in the vibrate command.</P>
 <TABLE rows=2 cols=8 border=1 width="50%">
 <TR>
@@ -66,8 +66,8 @@
 
 <H2>Example Code</H2>
 I love example code.  You won't want to run this, though.  Instead get the nice friendly version <A href="code/">here</A>.
-<H3><A href="http://www.be.com/products/freebeos/">BeOS</A></H3>
-As usual when writing code for Be, this is excrutiatingly simple.  It does require Be's <A href="ftp://ftp.be.com/pub/samples/usb_kit/usbkit_99-03-23.tgz">USBKit</A> (which is included in the <A href="code/">sample code archive</A>).
+<H3><A href="http://en.wikipedia.org/wiki/BeOS">BeOS</A></H3>
+As usual when writing code for Be, this is excrutiatingly simple.  It does require Be's USBKit (which is included in the <A href="code/">sample code archive</A>).
 <PRE><CODE>
   #define INTENSITY	200
   #define DELAY		3
@@ -90,6 +90,7 @@ As usual when writing code for Be, this is excrutiatingly simple.  It does requi
 <DT>05/08/2001</DT> <DD>Initial version</DD>
 <DT>09/10/2001</DT> <DD>Changed to GNU Free Documentation License, changed existing copyright notices to reflect such.</DD>
 <DT>01/14/2002</DT> <DD>Added link to list of mice, updated copyright notice</DD>
+<DT>03/01/2011</DT> <DD>Added to GitHub, removed some outdated links.</DD>
 </DL>
 
 
